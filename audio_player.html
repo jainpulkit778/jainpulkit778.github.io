@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Audio Player</title>
+</head>
+<body>
+  <audio controls id="audioPlayer">
+    Your browser does not support the audio element.
+  </audio>
+
+  <script>
+    // Get the data URI from the URL parameter
+    const urlParams = new URLSearchParams(window.location.search);
+    const dataUri = urlParams.get('dataUri');
+
+    // Set the data URI as the source for the audio element
+    const audioPlayer = document.getElementById('audioPlayer');
+    audioPlayer.src = dataUri;
+
+    // Autoplay the audio
+    audioPlayer.play();
+  </script>
+</body>
+</html>
