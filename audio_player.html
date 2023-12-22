@@ -20,7 +20,12 @@
                 },
                 body: 'apiKey=radiusglobal&username=pulkit.jain@radiusgs.com&password=Speech238', // Replace with actual credentials
             })
-            .then(response => response.json())
+            .then(response => {
+                 if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                return response.json();
+            })
             .then(data => {
                 const token = data.token; // Assuming the token is available in the response
                 console.log('Security Token:', token);
