@@ -26,7 +26,7 @@
             .then(response => response.json())
             .then(data => {
                 const token = data.token; // Assuming the token is available in the response
-                const audioApiUrl = `https://feapi.callminer.net/api/v2/playback/stream/${numericField}/mp3?JWT=${token}`;
+                const audioApiUrl = `https://feapi.callminer.net/api/v2/playback/stream/${eurekaid}/mp3?JWT=${token}`;
                 fetch(audioApiUrl, {
                     method: 'GET',
                 })
