@@ -1,26 +1,54 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Audio Player</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Audio Player</title>
 </head>
 <body>
   <audio controls id="audioPlayer">
     Your browser does not support the audio element.
   </audio>
+	
+    <script>
+        // Step 1: Function to get security token
+      function getTokenAndFetchAudio() {
+	    const urlParams = new URLSearchParams(window.location.search);
+    	const eurekaid = urlParams.get('eurekaid');
+            // Replace 'https://token-api.example.com' with the actual token API endpoint
+            fetch('https://sapi.callminer.net/security/getToken', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: 'apiKey=radiusglobal&username=pulkit.jain@radiusgs.com&password=Speech238', // Replace with actual credentials
+            })
+            .then(response => response.json())
+            .then(data => {
+                const token = data.token; // Assuming the token is available in the response
+                const audioApiUrl = `https://feapi.callminer.net/api/v2/playback/stream/${numericField}/mp3?JWT=${token}`;
+                fetch(audioApiUrl, {
+                    method: 'GET',
+                })
+                .then(response => response.arrayBuffer())
+                .then(audioBytes => {
+                    // Step 3: Play the audio using an audio player
+                    const audioBlob = new Blob([audioBytes], { type: 'audio/mp3' });
+                    const audioUrl = URL.createObjectURL(audioBlob);
+                    const audioPlayer = new Audio(audioUrl);
+                    audioPlayer.play();
+                })
+                .catch(error => {
+                    console.error('Error fetching audio:', error);
+                });
+            })
+            .catch(error => {
+                console.error('Error fetching token:', error);
+            });
+        }
+	// Call the function when the window loads
+        window.onload = getTokenAndFetchAudio;
+    </script>
 
-  <script>
-    // Get the data URI from the URL parameter
-    const urlParams = new URLSearchParams(window.location.search);
-    const dataUri = urlParams.get('dataUri');
-
-    // Set the data URI as the source for the audio element
-    const audioPlayer = document.getElementById('audioPlayer');
-    audioPlayer.src = dataUri;
-
-    // Autoplay the audio
-    audioPlayer.play();
-  </script>
 </body>
 </html>
