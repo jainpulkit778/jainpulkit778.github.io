@@ -3,18 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Audio Player</title>
+    <title>REST API Example - Step 1</title>
 </head>
 <body>
-  <audio controls id="audioPlayer">
-    Your browser does not support the audio element.
-  </audio>
-	
+
+    <h1>REST API Example - Step 1</h1>
+
     <script>
         // Step 1: Function to get security token
-      function getTokenAndFetchAudio() {
-	    const urlParams = new URLSearchParams(window.location.search);
-    	const eurekaid = urlParams.get('eurekaid');
+        function getSecurityToken() {
             // Replace 'https://token-api.example.com' with the actual token API endpoint
             fetch('https://sapi.callminer.net/security/getToken', {
                 method: 'POST',
@@ -26,28 +23,15 @@
             .then(response => response.json())
             .then(data => {
                 const token = data.token; // Assuming the token is available in the response
-                const audioApiUrl = `https://feapi.callminer.net/api/v2/playback/stream/${eurekaid}/mp3?JWT=${token}`;
-                fetch(audioApiUrl, {
-                    method: 'GET',
-                })
-                .then(response => response.arrayBuffer())
-                .then(audioBytes => {
-                    // Step 3: Play the audio using an audio player
-                    const audioBlob = new Blob([audioBytes], { type: 'audio/mp3' });
-                    const audioUrl = URL.createObjectURL(audioBlob);
-                    const audioPlayer = new Audio(audioUrl);
-                    audioPlayer.play();
-                })
-                .catch(error => {
-                    console.error('Error fetching audio:', error);
-                });
+                console.log('Security Token:', token);
             })
             .catch(error => {
                 console.error('Error fetching token:', error);
             });
         }
-	// Call the function when the window loads
-        window.onload = getTokenAndFetchAudio;
+
+        // Call the function when the window loads
+        window.onload = getSecurityToken;
     </script>
 
 </body>
