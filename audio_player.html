@@ -2,42 +2,51 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>REST API Example - Step 1</title>
+    <title>HTTP Requests Example</title>
 </head>
 <body>
 
-    <h1>REST API Example - Step 1</h1>
+<script>
+    // Define the API URLs
+    const apiUrl1 = "https://sapi.callminer.net/security/getToken";
+    const apiUrl2 = "https://feapi.callminer.net/api/v2/playback/stream/30126349/mp3";
 
-    <script>
-        // Step 1: Function to get security token
-        function getSecurityToken() {
-            // Replace 'https://token-api.example.com' with the actual token API endpoint
-            fetch('https://sapi.callminer.net/security/getToken', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                },
-                body: 'apiKey=radiusglobal&username=pulkit.jain@radiusgs.com&password=Speech238', // Replace with actual credentials
-            })
-            .then(response => {
-                 if (!response.ok) {
-                    throw new Error(`HTTP error! Status: ${response.status}`);
-                }
-                return response.json();
-            })
-            .then(data => {
-                const token = data.token; // Assuming the token is available in the response
-                console.log('Security Token:', token);
-            })
-            .catch(error => {
-                console.error('Error fetching token:', error);
-            });
-        }
+    // Define the payload parameters
+    const apiKey = "radiusglobal";
+    const username = "pulkit.jain@radiusgs.com";
+    const password = "Speech238";
 
-        // Call the function when the window loads
-        window.onload = getSecurityToken;
-    </script>
+    // Encode the payload
+    const encodedPayload = `apiKey=${encodeURIComponent(apiKey)}&username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`;
+
+    // Make the HTTP request for Code 1
+    fetch(apiUrl1, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: encodedPayload
+    })
+    .then(response => response.json())
+    .then(jsonResponse1 => {
+        // Make the HTTP request for Code 2 using the token from Code 1
+        fetch(`${apiUrl2}?JWT=${jsonResponse1}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response2 => response2.json())
+        .then(jsonResponse2 => {
+            // Process jsonResponse2 as needed
+            console.log(jsonResponse2);
+        })
+        .catch(error => console.error('Error in second request:', error));
+    })
+    .catch(error => console.error('Error in first request:', error));
+</script>
 
 </body>
 </html>
