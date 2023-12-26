@@ -31,43 +31,10 @@
     })
     .then(response => response.json())
     .then(jsonResponse1 => {
-        // Make the HTTP request for Code 2 using the token from Code 1
-        fetch(`${apiUrl2}?JWT=${jsonResponse1}`, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        })
-        .then(response2 => response2.arrayBuffer())
-        .then(arrayBuffer => {
-            // Convert ArrayBuffer to Base64
-            const base64EncodedAudioData = arrayBufferToBase64(arrayBuffer);
-            // Create an Object URL from the Base64 data
-            const audioUrl = URL.createObjectURL(base64ToBlob(base64EncodedAudioData));
-            // Set the audio source to the Object URL
-            const audioPlayer = document.getElementById('audioPlayer');
-            audioPlayer.src = audioUrl;
-            // Play the audio
-            audioPlayer.play();
-        })
-        .catch(error => console.error('Error in second request:', error));
+    // Open the URL in a new browser window/tab
+        window.open(`${apiUrl2}?JWT=${jsonResponse1}`, '_blank');
     })
     .catch(error => console.error('Error in first request:', error));
-    // Function to convert ArrayBuffer to Base64
-    function arrayBufferToBase64(arrayBuffer) {
-        const binary = String.fromCharCode(...new Uint8Array(arrayBuffer));
-        return btoa(binary);
-    }
-    // Function to convert Base64 to Blob
-    function base64ToBlob(base64) {
-        const binaryString = atob(base64);
-        const length = binaryString.length;
-        const bytes = new Uint8Array(length);
-        for (let i = 0; i < length; i++) {
-            bytes[i] = binaryString.charCodeAt(i);
-        }
-        return new Blob([bytes], { type: 'audio/mp3' });
-    }
 </script>
 
 </body>
