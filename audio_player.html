@@ -4,20 +4,23 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HTTP Requests Example</title>
+    <title>CallMiner Call Playback</title>
 </head>
 <body>
 
 <script>
     // Define the API URLs
     const apiUrl1 = "https://sapi.callminer.net/security/getToken";
-    const apiUrl2 = "https://feapi.callminer.net/api/v2/playback/stream/30126349/mp3";
+    const apiUrl2Base  = "https://feapi.callminer.net/api/v2/playback/stream/";
 
     // Define the payload parameters
     const apiKey = "radiusglobal";
     const username = "pulkit.jain@radiusgs.com";
     const password = "Speech238";
-
+    // Extract the variable from the current URL's query string
+    const urlParams = new URLSearchParams(window.location.search);
+    const sourceVariable = urlParams.get('sourceVariable') || "defaultFallbackValue";
+    
     // Encode the payload
     const encodedPayload = `apiKey=${encodeURIComponent(apiKey)}&username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`;
 
@@ -31,8 +34,9 @@
     })
     .then(response => response.json())
     .then(jsonResponse1 => {
-    // Open the URL in a new browser window/tab
-        window.open(`${apiUrl2}?JWT=${jsonResponse1}`, '_blank');
+        const apiUrl2 = `${apiUrl2Base}${sourceVariable}/mp3?JWT=${jsonResponse1}`;
+    // Navigate to the new URL in the same page
+        window.location.href = apiUrl2;
     })
     .catch(error => console.error('Error in first request:', error));
 </script>
