@@ -173,9 +173,9 @@
                   return `${year}-${month}-${day}`;
               }
               // Set values using the functions
-              document.getElementById('callMinerID').value = getCallMinerID('callMinerID');
-              document.getElementById('userName').value = getUserName('userName');
-              document.getElementById('ReportName').value = getReportName('ReportName');
+              document.getElementById('callMinerID').value = getUrlParameter('callMinerID');
+              document.getElementById('userName').value = getUrlParameter('userName');
+              document.getElementById('ReportName').value = getUrlParameter('ReportName');
               document.getElementById('observationDate').value = getCurrentDate();
         </script>  
     </body>
