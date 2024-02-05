@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SharePoint Upload Form</title>
+</head>
+<body>
+
+    <h1>SharePoint Upload Form</h1>
+
+    <form id="uploadForm">
+        <!-- Step 1: Extract source variable from URL -->
+        <input type="hidden" id="sourceVariable" name="CallMiner Call Id" value="">
+        
+        <!-- 1a: Obtain the username from the system -->
+        <p>Welcome, <span id="username"></span>!</p>
+        
+        <!-- Step 2: Dropdown for user option -->
+        <label for="options">Choose an option:</label>
+        <select id="options" name="Observation Result">
+            <option value="False Positive">Option 1</option>
+            <option value="Remediation">Option 2</option>
+            <option value="Term Code Coaching">Option 3</option>
+            <option value="Spanish Call">Option 4</option>
+            <option value="Not Applicable">Option 5</option>
+        </select>
+
+        <!-- Step 3: Optional text area for comments -->
+        <label for="comments">Comments:</label>
+        <textarea id="comments" name="comments" rows="4" cols="50"></textarea>
+
+        <!-- Step 4: Button to execute upload -->
+        <button type="button" onclick="uploadToSharePoint()">Upload to SharePoint</button>
+    </form>
+
+    <script>
+        // Function to extract URL parameter by name
+        function getURLParameter(name) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(name);
+        }
+
+        // Function to set the username in the span element
+        function setUsername() {
+            const usernameSpan = document.getElementById('username');
+            // Replace 'getUsernameFromSystem()' with actual code to obtain the username
+            const username = getUsernameFromSystem();
+            usernameSpan.innerText = username;
+        }
+
+        // Function to execute upload to SharePoint
+        function uploadToSharePoint() {
+            // Replace the following lines with actual code to upload values to SharePoint
+            const sourceVariable = document.getElementById('sourceVariable').value;
+            const selectedOption = document.getElementById('options').value;
+            const comments = document.getElementById('comments').value;
+
+            // Actual upload code goes here
+
+            // For demonstration purposes, log the values to the console
+            console.log('Source Variable:', sourceVariable);
+            console.log('Selected Option:', selectedOption);
+            console.log('Comments:', comments);
+        }
+
+        // Initialize the form on page load
+        document.addEventListener('DOMContentLoaded', function () {
+            // Step 1: Extract source variable from the URL
+            const sourceVariableInput = document.getElementById('sourceVariable');
+            sourceVariableInput.value = getURLParameter('sourceVariable');
+
+            // 1a: Obtain the username from the system and set it in the span element
+            setUsername();
+        });
+    </script>
+
+</body>
+</html>
