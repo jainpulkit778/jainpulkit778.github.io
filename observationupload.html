@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Observation Uploader</title>
+    <script>
+        // Function to capture CallMiner ID from the URL parameter 'sourcevariable'
+        function getCallMinerID() {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get('callMinerID') || '';
+        }
+
+        // Function to capture User Name from the system global variable 'UserName'
+        function getUserName() {
+            // Assuming that the 'UserName' variable is globally available
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get('userName') || '';
+        }
+
+        // Function to upload values to SharePoint list
+        function uploadToSharePoint() {
+            // Add your SharePoint upload logic here
+            // You can use JavaScript libraries or frameworks for SharePoint interactions
+            alert('Values uploaded to SharePoint list!');
+        }
+    </script>
+</head>
+<body>
+
+    <form>
+        <h2>Observation Uploader</h2>
+
+        <div>
+            <label for="callMinerID">CallMiner ID:</label>
+            <input type="text" id="callMinerID" name="callMinerID" value="" readonly>
+        </div>
+
+        <div>
+            <label for="userName">User Name:</label>
+            <input type="text" id="userName" name="userName" value="" readonly>
+        </div>
+
+        <div>
+            <label for="observationResult">Observation Result:</label>
+            <select id="observationResult" name="observationResult">
+                <option value="falsePositive">False Positive</option>
+                <option value="remediation">Remediation</option>
+                <option value="termCodeCoaching">Term Code Coaching</option>
+                <option value="spanishCall">Spanish Call</option>
+                <option value="notApplicable">Not Applicable</option>
+            </select>
+        </div>
+
+        <div>
+            <label for="comments">Comments:</label>
+            <textarea id="comments" name="comments" rows="4"></textarea>
+        </div>
+
+        <button type="button" onclick="uploadToSharePoint()">Upload to SharePoint</button>
+    </form>
+
+    <script>
+        // Set values using the functions
+        document.getElementById('callMinerID').value = getCallMinerID();
+        document.getElementById('userName').value = getUserName();
+    </script>
+
+</body>
+</html>
