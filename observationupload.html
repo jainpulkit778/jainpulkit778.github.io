@@ -18,11 +18,32 @@
             return urlParams.get('userName') || '';
         }
 
+        // Function to capture Report Name from the system global variable 'UserName'
+        function getReportName() {
+            // Assuming that the 'ReportName' variable is globally available
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get('ReportName') || '';
+        }
+
         // Function to upload values to SharePoint list
         function uploadToSharePoint() {
             // Add your SharePoint upload logic here
             // You can use JavaScript libraries or frameworks for SharePoint interactions
             alert('Values uploaded to SharePoint list!');
+        }
+
+        function getCurrentDate() {
+            // Get the current date in the format YYYY-MM-DD
+            const today = new Date();
+            const year = today.getFullYear();
+            let month = today.getMonth() + 1;
+            let day = today.getDate();
+
+            // Add leading zeros if needed
+            month = month < 10 ? '0' + month : month;
+            day = day < 10 ? '0' + day : day;
+
+            return `${year}-${month}-${day}`;
         }
     </script>
 </head>
@@ -39,6 +60,14 @@
         <div>
             <label for="userName">User Name:</label>
             <input type="text" id="userName" name="userName" value="" readonly>
+        </div>
+         <div>
+        <label for="observationDate">Observation Date:</label>
+        <input type="text" id="observationDate" name="observationDate" value="" readonly>
+              </div>
+        <div>
+            <label for="ReportName">User Name:</label>
+            <input type="text" id="ReportName" name="ReportName" value="" readonly>
         </div>
 
         <div>
@@ -64,6 +93,8 @@
         // Set values using the functions
         document.getElementById('callMinerID').value = getCallMinerID();
         document.getElementById('userName').value = getUserName();
+        document.getElementById('ReportName').value = getReportName();
+        document.getElementById('observationDate').value = getCurrentDate();
     </script>
 
 </body>
