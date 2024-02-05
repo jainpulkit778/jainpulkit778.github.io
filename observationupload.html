@@ -1,30 +1,40 @@
+<?php
+session_start();
+
+// Check if the user is logged in
+if (isset($_SESSION['username'])) {
+    $loggedInUsername = $_SESSION['username'];
+} else {
+    $loggedInUsername = 'Guest'; // Set a default if the user is not logged in
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SharePoint Upload Form</title>
+    <title>Observation Uploader</title>
 </head>
 <body>
 
-    <h1>SharePoint Upload Form</h1>
+    <h1>Observation Uploader Form</h1>
 
     <form id="uploadForm">
         <!-- Step 1: Extract source variable from URL -->
-        <input type="hidden" id="sourceVariable" name="CallMiner Call Id" value="">
+        <input id="sourceVariable" name="CallMiner Call Id" value="">
         
         <!-- 1a: Obtain the username from the system -->
         <p>Welcome, <span id="username"></span>!</p>
         
         <!-- Step 2: Dropdown for user option -->
-        <label for="options">Choose an option:</label>
+        <label for="Observation Result">Choose an option:</label>
         <select id="options" name="Observation Result">
-            <option value="False Positive">Option 1</option>
-            <option value="Remediation">Option 2</option>
-            <option value="Term Code Coaching">Option 3</option>
-            <option value="Spanish Call">Option 4</option>
-            <option value="Not Applicable">Option 5</option>
+            <option value="False Positive">False Positive</option>
+            <option value="Remediation">Remediation</option>
+            <option value="Term Code Coaching">Term Code Coaching</option>
+            <option value="Spanish Call">Spanish Call</option>
+            <option value="Not Applicable">Not Applicable</option>
         </select>
 
         <!-- Step 3: Optional text area for comments -->
@@ -44,7 +54,7 @@
 
         // Function to set the username in the span element
         function setUsername() {
-            const usernameSpan = document.getElementById('username');
+            //const usernameSpan = document.getElementById('username');
             // Replace 'getUsernameFromSystem()' with actual code to obtain the username
             const username = getUsernameFromSystem();
             usernameSpan.innerText = username;
