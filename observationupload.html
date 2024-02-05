@@ -4,8 +4,53 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Observation Uploader</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        form {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        h2 {
+            margin-bottom: 20px;
+        }
+
+        div {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        input,
+        select,
+        textarea {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
     <script>
-        // Function to capture CallMiner ID from the URL parameter 'sourcevariable'
+         // Function to capture CallMiner ID from the URL parameter 'sourcevariable'
         function getCallMinerID() {
             const urlParams = new URLSearchParams(window.location.search);
             return urlParams.get('callMinerID') || '';
@@ -61,10 +106,12 @@
             <label for="userName">User Name:</label>
             <input type="text" id="userName" name="userName" value="" readonly>
         </div>
-         <div>
-        <label for="observationDate">Observation Date:</label>
-        <input type="text" id="observationDate" name="observationDate" value="" readonly>
-              </div>
+
+        <div>
+            <label for="observationDate">Observation Date:</label>
+            <input type="text" id="observationDate" name="observationDate" value="" readonly>
+        </div>
+
         <div>
             <label for="ReportName">User Name:</label>
             <input type="text" id="ReportName" name="ReportName" value="" readonly>
