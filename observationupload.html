@@ -18,32 +18,71 @@ if (isset($_SESSION['username'])) {
 </head>
 <body>
 
-    <h1>Observation Uploader Form</h1>
+    <form class="form-horizontal">
+<fieldset>
 
-    <form id="uploadForm">
-        <!-- Step 1: Extract source variable from URL -->
-        <input id="sourceVariable" name="CallMiner Call Id" value="">
-        
-        <!-- 1a: Obtain the username from the system -->
-        <p>Welcome, <span id="username"></span>!</p>
-        
-        <!-- Step 2: Dropdown for user option -->
-        <label for="Observation Result">Choose an option:</label>
-        <select id="options" name="Observation Result">
-            <option value="False Positive">False Positive</option>
-            <option value="Remediation">Remediation</option>
-            <option value="Term Code Coaching">Term Code Coaching</option>
-            <option value="Spanish Call">Spanish Call</option>
-            <option value="Not Applicable">Not Applicable</option>
-        </select>
+<!-- Form Name -->
+<legend>Observation Uploader</legend>
 
-        <!-- Step 3: Optional text area for comments -->
-        <label for="comments">Comments:</label>
-        <textarea id="comments" name="comments" rows="4" cols="50"></textarea>
+<!-- Text input-->
+<div class="form-group">
+  <label class="col-md-4 control-label" for="EurekaID">CallMiner Id</label>  
+  <div class="col-md-2">
+  <input id="EurekaID" name="EurekaID" type="text" placeholder="" class="form-control input-md">
+  <span class="help-block">Auto populated field .If no value then close the form &amp; re-click on the Power Bi Row link.</span>  
+  </div>
+</div>
 
-        <!-- Step 4: Button to execute upload -->
-        <button type="button" onclick="uploadToSharePoint()">Upload to SharePoint</button>
-    </form>
+<!-- Text input-->
+<div class="form-group">
+  <label class="col-md-4 control-label" for="UserName">Logged-In User</label>  
+  <div class="col-md-4">
+  <input id="UserName" name="UserName" type="text" placeholder="" class="form-control input-md">
+  <span class="help-block">Auto populated field </span>  
+  </div>
+</div>
+
+<!-- Button Drop Down -->
+<div class="form-group">
+  <label class="col-md-4 control-label" for="buttondropdown">Observation Result</label>
+  <div class="col-md-4">
+    <div class="input-group">
+      <input id="buttondropdown" name="buttondropdown" class="form-control" placeholder="Select Any One" type="text">
+      <div class="input-group-btn">
+        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+          
+          <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu pull-right">
+          <li><a href="#">False Positive</a></li>
+          <li><a href="#">Remediation</a></li>
+          <li><a href="#">Term Code Coaching</a></li>
+          <li><a href="#">Spanish Call</a></li>
+          <li><a href="#">Not Applicable</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Textarea -->
+<div class="form-group">
+  <label class="col-md-4 control-label" for="textarea">Observation Comments</label>
+  <div class="col-md-4">                     
+    <textarea class="form-control" id="textarea" name="textarea"></textarea>
+  </div>
+</div>
+
+<!-- Button -->
+<div class="form-group">
+  <label class="col-md-4 control-label" for="singlebutton"></label>
+  <div class="col-md-4">
+    <button id="singlebutton" name="singlebutton" class="btn btn-primary">Submit</button>
+  </div>
+</div>
+
+</fieldset>
+</form>
 
     <script>
         // Function to extract URL parameter by name
