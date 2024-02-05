@@ -1,240 +1,220 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Observation Uploader</title>
-    
-<style>
-        body {
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Observation Uploader</title>
+    </head>
+    <body>
+        <style>
+            body {
             font-family: Arial, sans-serif;
             margin: 20px;
-        }
-
-        form {
+            }
+            form {
             max-width: 600px;
             margin: 0 auto;
-        }
-
-        h2 {
+            }
+            h2 {
             margin-bottom: 20px;
-        }
-
-        div {
+            }
+            div {
             margin-bottom: 15px;
-        }
-
-        label {
+            }
+            label {
             display: block;
             margin-bottom: 5px;
-        }
-
-        input,
-        select,
-        textarea {
+            }
+            input,
+            select,
+            textarea {
             width: 100%;
             padding: 8px;
             box-sizing: border-box;
-        }
-
-        button {
+            }
+            button {
             background-color: #4CAF50;
             color: white;
             padding: 10px 15px;
             border: none;
             border-radius: 4px;
             cursor: pointer;
-        }
-
-        button:hover {
+            }
+            button:hover {
             background-color: #45a049;
-        }
-    </style>
-    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-    <script>
-         // Function to capture CallMiner ID from the URL parameter 'sourcevariable'
-        function getCallMinerID() {
-             const urlParams = new URLSearchParams(window.location.search);
-            return urlParams.get('callMinerID') || '';
-         }
-        // Function to capture User Name from the system global variable 'UserName'
-        function getUserName() {
-            // Assuming that the 'UserName' variable is globally available
-            const urlParams = new URLSearchParams(window.location.search);
-            return urlParams.get('userName') || '';
-        }
-        // Function to capture Report Name from the system global variable 'UserName'
-        function getReportName() {
-            // Assuming that the 'ReportName' variable is globally available
-            const urlParams = new URLSearchParams(window.location.search);
-            return urlParams.get('ReportName') || '';
-        }
-        // Function to handle SharePoint item upload
-        function uploadToSharePoint() {
-            var callid = document.getElementById('callMinerID').value;
-            var category = document.getElementById('observationResult').value;
-            var comments = document.getElementById('comments').value;
-            var EntUserName = document.getElementById('userName').value;
-            var EntReportName = document.getElementById('ReportName').value;
-            var Enterdate = document.getElementById('observationDate').value;
-            checkAndUploadObservation(callid, category, comments, EntUserName, EntReportName, Enterdate);
-        }
-
-        // Function to check and upload observation to SharePoint
-        function checkAndUploadObservation(callid, category, comments, EntUserName, EntReportName, Enterdate) {
-            // SharePoint Site URL
-            var siteUrl = "https://radiusgs-my.sharepoint.com/personal/pulkit_jain_radiusgs_com";
-            // List Name
-            var listName = "Feedback_List_Compliance";
-            // Item Column Values
-            var columnName1 = "Eureka_ID";
-            var columnValue1 = callid;
-            var columnName2 = "Enviornment_UserName";
-            var columnValue2 = EntUserName;
-            var columnName3 = "Report_Type";
-            var columnValue3 = EntReportName;
-            var columnName4 = "Date_Of_Audit";
-            var columnValue4 = Enterdate;
-            var columnName5 = "Observation_Type";
-            var columnValue5 = category;
-            var columnName6 = "Observation_Comments";
-            var columnValue6 = comments;
-            // REST API URL to get items based on column values
-            var apiUrl = siteUrl + "/_api/web/lists/getbytitle('" + listName + "')/items?$filter=" +
-                columnName1 + " eq '" + columnValue1 + "' and " +
-                columnName2 + " eq '" + columnValue2 + "' and " +
-                columnName3 + " eq '" + columnValue3 + "'";
-            // Make the REST API call
-            $.ajax({
-                url: apiUrl,
-                type: "GET",
-                headers: {
-                    "Accept": "application/json;odata=verbose"
-                },
-                success: function (data) {
-                    if (data.d.results.length > 0) {
-                        var confirmation = window.confirm("Feedback Already in the System. Do you wish to upload this Entry?");
-                        if (confirmation) {
-                            var itemId = data.d.results[0].Id;
-                            // REST API URL to delete the item
-                            var deleteUrl = siteUrl + "/_api/web/lists/getbytitle('" + listName + "')/items(" + itemId + ")";
-                            // Make the REST API call to delete the item
-                            $.ajax({
-                                url: deleteUrl,
-                                type: "DELETE",
-                                headers: {
-                                    "Accept": "application/json;odata=verbose",
-                                    "X-RequestDigest": $("#__REQUESTDIGEST").val()
-                                },
-                                success: function () {
-                                    // Proceed to upload after deletion
-                                    uploadObservation();
-                                },
-                                error: function (error) {
-                                    console.log("Error deleting item: " + JSON.stringify(error));
-                                }
-                            });
-                        }
-                    } else {
-                        // No existing item found, proceed to upload
-                        uploadObservation();
-                    }
-                },
-                error: function (error) {
-                    console.log("Error: " + JSON.stringify(error));
-                }
-            });
-        }
-        // Function to upload observation to SharePoint
-        function uploadObservation() {
-            // SharePoint Site URL
-            var siteUrl = "https://radiusgs-my.sharepoint.com/personal/pulkit_jain_radiusgs_com";
-            // List Name
-            var listName = "Feedback_List_Compliance";
-            // Item properties
-            var itemProperties = {
-                "__metadata": { "type": "SP.Data." + listName + "ListItem" },
-                columnName1: columnValue1,
-                columnName2: columnValue2,
-                columnName3: columnValue3,
-                columnName4: columnValue4,
-                columnName5: columnValue5,
-                columnName6: columnValue6
-                // Add more columns as needed
-            };
-            // REST API URL to add a new item
-            var UploadUrl = siteUrl + "/_api/web/lists/getbytitle('" + listName + "')/items";
-            // Make the REST API call to upload the item
-            $.ajax({
-                url: UploadUrl,
-                type: "POST",
-                contentType: "application/json;odata=verbose",
-                data: JSON.stringify(itemProperties),
-                headers: {
-                    "Accept": "application/json;odata=verbose",
-                    "X-RequestDigest": $("#__REQUESTDIGEST").val()
-                },
-                success: function (data) {
-                    window.close();
-                },
-                error: function (error) {
-                    console.log("Error uploading item: " + JSON.stringify(error));
-                }
-            });
-        }
-        // Function to get the current date
-        function getCurrentDate() {
-            const today = new Date();
-            const year = today.getFullYear();
-            let month = today.getMonth() + 1;
-            let day = today.getDate();
-
-            month = month < 10 ? '0' + month : month;
-            day = day < 10 ? '0' + day : day;
-
-            return `${year}-${month}-${day}`;
-        }
-        // Set values using the functions
-        document.getElementById('callMinerID').value = getCallMinerID('callMinerID');
-        document.getElementById('userName').value = getUserName('userName');
-        document.getElementById('ReportName').value = getReportName('ReportName');
-        document.getElementById('observationDate').value = getCurrentDate();
-    </script>
-</head>
-<body>
-  <form>
-        <h2>Observation Uploader</h2>
-        <div>
-            <label for="callMinerID">CallMiner ID:</label>
-            <input type="text" id="callMinerID" name="callMinerID" value="" readonly>
-        </div>
-        <div>
-            <label for="userName">User Name:</label>
-            <input type="text" id="userName" name="userName" value="" readonly>
-        </div>
-        <div>
-            <label for="observationDate">Observation Date:</label>
-            <input type="text" id="observationDate" name="observationDate" value="" readonly>
-        </div>
-        <div>
-            <label for="ReportName">Report Name:</label>
-            <input type="text" id="ReportName" name="ReportName" value="" readonly>
-        </div>
-        <div>
-            <label for="observationResult">Observation Result:</label>
-            <select id="observationResult" name="observationResult">
-                <option value="falsePositive">False Positive</option>
-                <option value="remediation">Remediation</option>
-                <option value="termCodeCoaching">Term Code Coaching</option>
-                <option value="spanishCall">Spanish Call</option>
-                <option value="notApplicable">Not Applicable</option>
-            </select>
-        </div>
-        <div>
-            <label for="comments">Comments:</label>
-            <textarea id="comments" name="comments" rows="4"></textarea>
-        </div>
-        <button type="button" onclick="uploadToSharePoint()">Upload Observation</button>
-    </form>
-</body>
+            }
+        </style>
+        <form>
+            <h2>Observation Uploader</h2>
+            <div>
+                <label for="callMinerID">CallMiner ID:</label>
+                <input type="text" id="callMinerID" name="callMinerID" value="" readonly>
+            </div>
+            <div>
+                <label for="userName">User Name:</label>
+                <input type="text" id="userName" name="userName" value="" readonly>
+            </div>
+            <div>
+                <label for="observationDate">Observation Date:</label>
+                <input type="text" id="observationDate" name="observationDate" value="" readonly>
+            </div>
+            <div>
+                <label for="ReportName">Report Name:</label>
+                <input type="text" id="ReportName" name="ReportName" value="" readonly>
+            </div>
+            <div>
+                <label for="observationResult">Observation Result:</label>
+                <select id="observationResult" name="observationResult">
+                    <option value="falsePositive">False Positive</option>
+                    <option value="remediation">Remediation</option>
+                    <option value="termCodeCoaching">Term Code Coaching</option>
+                    <option value="spanishCall">Spanish Call</option>
+                    <option value="notApplicable">Not Applicable</option>
+                </select>
+            </div>
+            <div>
+                <label for="comments">Comments:</label>
+                <textarea id="comments" name="comments" rows="4"></textarea>
+            </div>
+            <button type="button" onclick="uploadToSharePoint()">Upload Observation</button>
+        </form>
+        <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+        <script>
+            // Function to capture values from URL parameters
+            function getUrlParameter(paramName) {
+              const urlParams = new URLSearchParams(window.location.search);
+              return urlParams.get(paramName) || '';
+            }
+              // Function to handle SharePoint item upload
+              function uploadToSharePoint() {
+                  var callid = document.getElementById('callMinerID').value;
+                  var category = document.getElementById('observationResult').value;
+                  var comments = document.getElementById('comments').value;
+                  var EntUserName = document.getElementById('userName').value;
+                  var EntReportName = document.getElementById('ReportName').value;
+                  var Enterdate = document.getElementById('observationDate').value;
+                  checkAndUploadObservation(callid, category, comments, EntUserName, EntReportName, Enterdate);
+              }
+            
+              // Function to check and upload observation to SharePoint
+              function checkAndUploadObservation(callid, category, comments, EntUserName, EntReportName, Enterdate) {
+                  // SharePoint Site URL
+                  var siteUrl = "https://radiusgs-my.sharepoint.com/personal/pulkit_jain_radiusgs_com";
+                  // List Name
+                  var listName = "Feedback_List_Compliance";
+                  // Item Column Values
+                  var columnName1 = "Eureka_ID";
+                  var columnValue1 = callid;
+                  var columnName2 = "Enviornment_UserName";
+                  var columnValue2 = EntUserName;
+                  var columnName3 = "Report_Type";
+                  var columnValue3 = EntReportName;
+                  var columnName4 = "Date_Of_Audit";
+                  var columnValue4 = Enterdate;
+                  var columnName5 = "Observation_Type";
+                  var columnValue5 = category;
+                  var columnName6 = "Observation_Comments";
+                  var columnValue6 = comments;
+                  // REST API URL to get items based on column values
+                  var apiUrl = siteUrl + "/_api/web/lists/getbytitle('" + listName + "')/items?$filter=" +
+                      columnName1 + " eq '" + columnValue1 + "' and " +
+                      columnName2 + " eq '" + columnValue2 + "' and " +
+                      columnName3 + " eq '" + columnValue3 + "'";
+                  // Make the REST API call
+                  $.ajax({
+                      url: apiUrl,
+                      type: "GET",
+                      headers: {
+                          "Accept": "application/json;odata=verbose"
+                      },
+                      success: function (data) {
+                          if (data.d.results.length > 0) {
+                              var confirmation = window.confirm("Feedback Already in the System. Do you wish to upload this Entry?");
+                              if (confirmation) {
+                                  var itemId = data.d.results[0].Id;
+                                  // REST API URL to delete the item
+                                  var deleteUrl = siteUrl + "/_api/web/lists/getbytitle('" + listName + "')/items(" + itemId + ")";
+                                  // Make the REST API call to delete the item
+                                  $.ajax({
+                                      url: deleteUrl,
+                                      type: "DELETE",
+                                      headers: {
+                                          "Accept": "application/json;odata=verbose",
+                                          "X-RequestDigest": $("#__REQUESTDIGEST").val()
+                                      },
+                                      success: function () {
+                                          // Proceed to upload after deletion
+                                          uploadObservation();
+                                      },
+                                      error: function (error) {
+                                          console.log("Error deleting item: " + JSON.stringify(error));
+                                      }
+                                  });
+                              }
+                          } else {
+                              // No existing item found, proceed to upload
+                              uploadObservation();
+                          }
+                      },
+                      error: function (error) {
+                          console.log("Error: " + JSON.stringify(error));
+                      }
+                  });
+              }
+              // Function to upload observation to SharePoint
+              function uploadObservation() {
+                  // SharePoint Site URL
+                  var siteUrl = "https://radiusgs-my.sharepoint.com/personal/pulkit_jain_radiusgs_com";
+                  // List Name
+                  var listName = "Feedback_List_Compliance";
+                  // Item properties
+                  var itemProperties = {
+                      "__metadata": { "type": "SP.Data." + listName + "ListItem" },
+                      columnName1: columnValue1,
+                      columnName2: columnValue2,
+                      columnName3: columnValue3,
+                      columnName4: columnValue4,
+                      columnName5: columnValue5,
+                      columnName6: columnValue6
+                      // Add more columns as needed
+                  };
+                  // REST API URL to add a new item
+                  var UploadUrl = siteUrl + "/_api/web/lists/getbytitle('" + listName + "')/items";
+                  // Make the REST API call to upload the item
+                  $.ajax({
+                      url: UploadUrl,
+                      type: "POST",
+                      contentType: "application/json;odata=verbose",
+                      data: JSON.stringify(itemProperties),
+                      headers: {
+                          "Accept": "application/json;odata=verbose",
+                          "X-RequestDigest": $("#__REQUESTDIGEST").val()
+                      },
+                      success: function (data) {
+                          window.close();
+                      },
+                      error: function (error) {
+                          console.log("Error uploading item: " + JSON.stringify(error));
+                      }
+                  });
+              }
+              // Function to get the current date
+              function getCurrentDate() {
+                  const today = new Date();
+                  const year = today.getFullYear();
+                  let month = today.getMonth() + 1;
+                  let day = today.getDate();
+            
+                  month = month < 10 ? '0' + month : month;
+                  day = day < 10 ? '0' + day : day;
+            
+                  return `${year}-${month}-${day}`;
+              }
+              // Set values using the functions
+              document.getElementById('callMinerID').value = getCallMinerID('callMinerID');
+              document.getElementById('userName').value = getUserName('userName');
+              document.getElementById('ReportName').value = getReportName('ReportName');
+              document.getElementById('observationDate').value = getCurrentDate();
+        </script>  
+    </body>
 </html>
