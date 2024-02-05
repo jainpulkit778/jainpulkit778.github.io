@@ -55,6 +55,8 @@
                   var EntUserName = document.getElementById('userName').value;
                   var EntReportName = document.getElementById('ReportName').value;
                   var Enterdate = document.getElementById('observationDate').value;
+                  console.log("Uploading to SharePoint...");
+                  alert("Uploading to SharePoint..."); // Add an alert for debugging
                   checkAndUploadObservation(callid, category, comments, EntUserName, EntReportName, Enterdate);
               }
             
