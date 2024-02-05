@@ -72,9 +72,27 @@
 
         // Function to upload values to SharePoint list
         function uploadToSharePoint() {
-            // Add your SharePoint upload logic here
-            // You can use JavaScript libraries or frameworks for SharePoint interactions
-            alert('Values uploaded to SharePoint list!');
+            var callid = document.getElementById('callMinerID').value;
+            var category = document.getElementById('observationResult').value;
+            var comments = document.getElementById('comments').value;
+            var EntUserName = document.getElementById('userName').value;
+            var EntReportName = document.getElementById('ReportName').value;
+            var Enterdate = document.getElementById('observationDate').value;
+            addObservation(callid, category, comments,EntUserName,EntReportName,Enterdate);
+        }
+         function addObservation(callid, category, comments,EntUserName,EntReportName,Enterdate) {
+            checkObservation(callid, category, comments,EntUserName,EntReportName,Enterdate);
+        }
+
+        function checkObservation(callid, category, comments,EntUserName,EntReportName,Enterdate) {
+            // Use SharePoint REST API or other client-side technology for interactions
+            // Here, we'll just show a confirmation dialog
+            var confirmation = window.confirm("Feedback Already in the System. Do you wish to upload this Entry?");
+            if (confirmation) {
+                deleteObservation(callid, environmentUserName, reportType);
+            } else {
+                // User chose not to upload, you can handle this case accordingly
+            }
         }
 
         function getCurrentDate() {
@@ -133,7 +151,7 @@
             <textarea id="comments" name="comments" rows="4"></textarea>
         </div>
 
-        <button type="button" onclick="uploadToSharePoint()">Upload to SharePoint</button>
+        <button type="button" onclick="uploadToSharePoint()">Upload Observation</button>
     </form>
 
     <script>
