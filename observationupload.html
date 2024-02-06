@@ -38,6 +38,7 @@
                 <label for="comments">Comments:</label>
                 <textarea id="comments" name="comments" rows="4"></textarea>
             </div>
+            <div id="output"></div>
             <button type="button" onclick="uploadToSharePoint()">Upload Observation</button>
         </form>
         <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
@@ -62,71 +63,51 @@
             
               // Function to check and upload observation to SharePoint
               function checkAndUploadObservation(callid, category, comments, EntUserName, EntReportName, Enterdate) {
-                  // SharePoint Site URL
-                  var siteUrl = "https://radiusgs-my.sharepoint.com/personal/pulkit_jain_radiusgs_com";
-                  // List Name
-                  var listName = "25bfbc7a-4568-43b1-982e-f43c335907c8";
-                  // Item Column Values
-                  var columnName1 = "Eureka_ID";
-                  var columnValue1 = callid;
-                  var columnName2 = "Enviornment_UserName";
-                  var columnValue2 = EntUserName;
-                  var columnName3 = "Report_Type";
-                  var columnValue3 = EntReportName;
-                  var columnName4 = "Date_Of_Audit";
-                  var columnValue4 = Enterdate;
-                  var columnName5 = "Observation_Type";
-                  var columnValue5 = category;
-                  var columnName6 = "Observation_Comments";
-                  var columnValue6 = comments;
-                  // REST API URL to get items based on column values
-                  var apiUrl = siteUrl + "/_api/web/lists(guid'" + listName + "')/items?$filter=" +
-                      columnName1 + " eq '" + columnValue1 + "' and " +
-                      columnName2 + " eq '" + columnValue2 + "' and " +
-                      columnName3 + " eq '" + columnValue3 + "'";
-                  console.log(apiUrl);
-                  alert("Uploading to SharePoint..."); // Add an alert for debugging
-                  // Make the REST API call
-                  $.ajax({
-                      url: apiUrl,
-                      type: "GET",
-                      headers: {
-                          "Accept": "application/json;odata=verbose"
-                      },
-                      success: function (data) {
-                          if (data.d.results.length > 0) {
-                              var confirmation = window.confirm("Feedback Already in the System. Do you wish to upload this Entry?");
-                              if (confirmation) {
-                                  var itemId = data.d.results[0].Id;
-                                  // REST API URL to delete the item
-                                  var deleteUrl = siteUrl + "/_api/web/lists/getbytitle('" + listName + "')/items(" + itemId + ")";
-                                  // Make the REST API call to delete the item
-                                  $.ajax({
-                                      url: deleteUrl,
-                                      type: "DELETE",
-                                      headers: {
-                                          "Accept": "application/json;odata=verbose",
-                                          "X-RequestDigest": $("#__REQUESTDIGEST").val()
-                                      },
-                                      success: function () {
-                                          // Proceed to upload after deletion
-                                          uploadObservation();
-                                      },
-                                      error: function (error) {
-                                          console.log("Error deleting item: " + JSON.stringify(error));
-                                      }
-                                  });
-                              }
-                          } else {
-                              // No existing item found, proceed to upload
-                              uploadObservation();
-                          }
-                      },
-                      error: function (error) {
-                          console.log("Error: " + JSON.stringify(error));
-                      }
-                  });
+               var connection = new ActiveXObject("ADODB.Connection");
+            var recordset = new ActiveXObject("ADODB.Recordset");
+
+            var connectionString = "Provider=Microsoft.ACE.OLEDB.12.0;WSS;IMEX=2;RetrieveIds=Yes;" +
+                            "DATABASE=https://radiusgs-my.sharepoint.com/personal/pulkit_jain_radiusgs_com/;" +
+                            "LIST={25BFBC7A-4568-43B1-982E-F43C335907C8}";
+
+            connection.Open(connectionString);
+
+            var sqlQuery = "SELECT count(*) as Result_Count FROM [Feedback_List_Compliance] WHERE Eureka_ID='"+ callid + "' and Enviornment_UserName='" +EntUserName +
+                "' and Report_Type='"+ EntReportName + "'";
+                console.log(sqlQuery);
+            recordset.Open(sqlQuery, connection);
+            var recordsetData = [
+            { columnName: 'Result_Count'}
+        ];
+                  // Simulate recordset structure
+        var recordsetStructure = {
+            Fields: function (columnName) {
+                return {
+                    Value: function () {
+                        return recordsetData[0][columnName];
+                    }
+                };
+            },
+            MoveNext: function () {
+                recordsetData.shift(); // Move to the next record
+            }
+        };
+            recordset.Close();
+            connection.Close();
               }
+            // Simulate the behavior of CopyFromRecordset
+        function copyFromRecordset() {
+            var outputDiv = document.getElementById('output');
+            outputDiv.innerHTML = ''; // Clear previous content
+
+            // Copy data from recordset to the HTML element
+            while (recordsetData.length > 0) {
+                var value = recordsetStructure.Fields('Result_Count').Value();
+                console.log(value);
+                outputDiv.innerHTML += '<p>' + value + '</p>';
+                recordsetStructure.MoveNext();
+            }
+        }
               // Function to upload observation to SharePoint
               function uploadObservation() {
                   // SharePoint Site URL
