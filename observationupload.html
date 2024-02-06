@@ -65,7 +65,7 @@
                   // SharePoint Site URL
                   var siteUrl = "https://radiusgs-my.sharepoint.com/personal/pulkit_jain_radiusgs_com";
                   // List Name
-                  var listName = "Feedback_List_Compliance";
+                  var listName = "25bfbc7a-4568-43b1-982e-f43c335907c8";
                   // Item Column Values
                   var columnName1 = "Eureka_ID";
                   var columnValue1 = callid;
@@ -80,7 +80,7 @@
                   var columnName6 = "Observation_Comments";
                   var columnValue6 = comments;
                   // REST API URL to get items based on column values
-                  var apiUrl = siteUrl + "/_api/web/lists/getbytitle('" + listName + "')/items?$filter=" +
+                  var apiUrl = siteUrl + "/_api/web/lists(guid'" + listName + "')/items?$filter=" +
                       columnName1 + " eq '" + columnValue1 + "' and " +
                       columnName2 + " eq '" + columnValue2 + "' and " +
                       columnName3 + " eq '" + columnValue3 + "'";
