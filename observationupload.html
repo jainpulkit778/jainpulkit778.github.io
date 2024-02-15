@@ -1,117 +1,106 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
+  <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Observation Uploader</title>
-</head>
-<body>
-
-<form action="your_script_url_here" method="post" enctype="multipart/form-data">
+  </head>
+  <body>
     <div>
-        <label for="callMinerIDInput">CallMiner ID:</label>
-        <input type="text" id="callMinerIDInput" name="CallMinerID" readonly>
+      <label for="callMinerIDInput">CallMiner ID:</label>
+      <input type="text" id="callMinerIDInput" name="CallMinerID" readonly>
     </div>
     <div>
-        <label for="reportTypeInput">Report Type:</label>
-        <input type="text" id="reportTypeInput" name="reportType" readonly>
+      <label for="reportTypeInput">Report Type:</label>
+      <input type="text" id="reportTypeInput" name="reportType" readonly>
     </div>
     <div>
-        <label for="userNameInput">User Name:</label>
-        <input type="text" id="userNameInput" name="userName" readonly>
+      <label for="userNameInput">User Name:</label>
+      <input type="text" id="userNameInput" name="userName" readonly>
     </div>
     <div>
-        <label for="observationResultInput">Observation Result:</label>
-        <select id="observationResultInput" name="ObservationResult">
-            <option value="False Positive">False Positive</option>
-            <option value="Remediation">Remediation</option>
-            <option value="Term Code Coaching">Term Code Coaching</option>
-            <option value="Spanish Call">Spanish Call</option>
-            <option value="Not Applicable">Not Applicable</option>
-        </select>
+      <label for="observationResultInput">Observation Result:</label>
+      <select id="observationResultInput" name="ObservationResult">
+        <option value="False Positive">False Positive</option>
+        <option value="Remediation">Remediation</option>
+        <option value="Term Code Coaching">Term Code Coaching</option>
+        <option value="Spanish Call">Spanish Call</option>
+        <option value="Not Applicable">Not Applicable</option>
+      </select>
     </div>
     <div>
-        <label for="commentInput">Observation Comment:</label>
-        <textarea id="commentInput" name="Comment" rows="4" cols="50"></textarea>
+      <label for="commentInput">Observation Comment:</label>
+      <textarea id="commentInput" name="Comment" rows="4" cols="50"></textarea>
     </div>
     <div>
-        <button type="button" onclick="uploadButtonClick()">Upload</button>
+      <button type="button" onclick="uploadButtonClick()">Upload</button>
     </div>
-</form>
-
-<script defer>
-    const apiUrl1 = "https://sapi.callminer.net/security/getToken";
-    const apiUrl2Base = "https://feapi.callminer.net/api/v2/comment/";
-    // Define the payload parameters
-    const apiKey = "radiusglobal";
-    const username = "pulkit.jain@radiusgs.com";
-    const password = "Speech239";
-    const encodedPayload = `apiKey=${encodeURIComponent(apiKey)}&username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`;
-
-    // Function to parse URL parameters
-    function getURLParameter(name) {
+    <script defer>
+      const apiUrl1 = "https://sapi.callminer.net/security/getToken";
+      const apiUrl2Base = "https://feapi.callminer.net/api/v2/comment/";
+      // Define the payload parameters
+      const apiKey = "radiusglobal";
+      const username = "pulkit.jain@radiusgs.com";
+      const password = "Speech239";
+      const encodedPayload = `apiKey=${encodeURIComponent(apiKey)}&username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`;
+      // Function to parse URL parameters
+      function getURLParameter(name) {
         const urlParams = new URLSearchParams(window.location.search);
         return urlParams.get(name);
-    }
-
-    // Getting values from URL
-    const callMinerID = getURLParameter('CallMinerID');
-    const reportType = getURLParameter('ReportType');
-    const userName = getURLParameter('UserName');
-
-    // Setting values to the read-only text input
-    document.getElementById('callMinerIDInput').value = callMinerID;
-    document.getElementById('reportTypeInput').value = reportType;
-    document.getElementById('userNameInput').value = userName;
-
-    // Function to be executed on button click
-    function uploadButtonClick() {
+      }
+      // Getting values from URL
+      const callMinerID = getURLParameter('CallMinerID');
+      const reportType = getURLParameter('ReportType');
+      const userName = getURLParameter('UserName');
+      // Setting values to the read-only text input
+      document.getElementById('callMinerIDInput').value = callMinerID;
+      document.getElementById('reportTypeInput').value = reportType;
+      document.getElementById('userNameInput').value = userName;
+      // Function to be executed on button click
+      function uploadButtonClick() {
         fetch(apiUrl1, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+          },
+          body: encodedPayload
+        }).then(response => response.json()).then(jsonResponse1 => {
+          const apiUrl2 = `${apiUrl2Base}${callMinerID}`;
+          console.log(apiUrl2);
+          // Concatenate variables into a single comment
+          const concatenatedComment = `${callMinerID};${reportType};${userName};${document.getElementById('observationResultInput').value};${document.getElementById('commentInput').value}`;
+          console.log(concatenatedComment);
+          var sl1 = {
+            Comment: concatenatedComment
+            // Add other properties as needed
+          };
+          var json = JSON.stringify(sl1);
+          // Convert JSON string to byte array
+          var buffer = new TextEncoder().encode(json);
+          // Create a Blob from the byte array
+          var blob = new Blob([buffer], {
+            type: "application/json"
+          });
+          // Make another POST request using fetch
+          fetch(apiUrl2, {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/x-www-form-urlencoded'
+              'Content-Type': 'application/json',
+              'Authorization': 'JWT ' + jsonResponse1
             },
-            body: encodedPayload
-        })
-        .then(response => response.json())
-        .then(jsonResponse1 => {
-            const apiUrl2 = `${apiUrl2Base}${callMinerID}?JWT=${jsonResponse1}`;
-            console.log(apiUrl2);
-            // Concatenate variables into a single comment
-            const concatenatedComment = `${callMinerID};${reportType};${userName};${document.getElementById('observationResultInput').value};${document.getElementById('commentInput').value}`;
-           console.log(concatenatedComment);
-            var sl1 = {
-                Comment: concatenatedComment
-                // Add other properties as needed
-            };
-            var json = JSON.stringify(sl1);
-
-            // Convert JSON string to byte array
-            var buffer = new TextEncoder().encode(json);
-
-            // Create a Blob from the byte array
-            var blob = new Blob([buffer], { type: "application/json" });
-
-            // Make another POST request using fetch
-            fetch(apiUrl2, {
-                method: 'POST',
-                body: blob
-            })
-            .then(response => {
-                if (response.status === 200) {
-                    console.log('Second POST response:', response);
-                    // Display a success message or perform other actions as needed
-                    alert('Feedback updated successfully!');
-                } else {
-                    console.error('Error in second request:', response.statusText);
-                    // Display an error message or handle the error accordingly
-                }
-            })
-            .catch(error => console.error('Error in second request:', error));
-        })
-        .catch(error => console.error('Error in first request:', error));
-    }
-</script>
-
-</body>
+            body: blob
+          }).then(response => {
+            if (response.status === 200) {
+              console.log('Second POST response:', response);
+              // Display a success message or perform other actions as needed
+              alert('Feedback updated successfully!');
+            } else {
+              console.error('Error in second request:', response.statusText);
+              // Display an error message or handle the error accordingly
+            }
+          }).catch(error => console.error('Error in second request:', error));
+        }).catch(error => console.error('Error in first request:', error));
+      }
+    </script>
+  </body>
 </html>
