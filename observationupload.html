@@ -28,9 +28,13 @@
     <form action="your_script_url_here" method="post" enctype="multipart/form-data">
         <label for="callMinerIDInput">CallMiner ID:</label>
         <input type="text" id="callMinerIDInput" name="CallMinerID" readonly>
-
         <label for="reportTypeInput">Report Type:</label>
-        <select id="reportTypeInput" name="ReportType">
+        <input type="text" id="reportTypeInput" name="reportType" readonly>
+        <label for="reportTypeInput">Report Type:</label>
+        <input type="text" id="userNameInput" name="userName" readonly>
+        <label for="userNameInput">User Name:</label>
+        
+        <select id="observationResultInput" name="ObservationResult">
             <option value="False Positive">False Positive</option>
             <option value="Remediation">Remediation</option>
             <option value="Term Code Coaching">Term Code Coaching</option>
@@ -38,7 +42,7 @@
             <option value="Not Applicable">Not Applicable</option>
         </select>
 
-        <label for="commentInput">Comment:</label>
+        <label for="commentInput">Observation Comment:</label>
         <textarea id="commentInput" name="Comment" rows="4" cols="50"></textarea>
 
         <label for="fileInput">Upload File:</label>
