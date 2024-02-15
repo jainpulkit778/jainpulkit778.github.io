@@ -1,57 +1,81 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Obervation Uploader</title>
-</head>
-<body>
-    <script>
-        // Function to parse URL parameters
-        function getURLParameter(name) {
-            const urlParams = new URLSearchParams(window.location.search);
-            return urlParams.get(name);
-        }
-        // Getting values from URL
-        const callMinerID = getURLParameter('CallMinerID');
-        const reportType = getURLParameter('ReportType');
-        const userName = getURLParameter('UserName');
-        // Setting values to the read-only text input
-        document.getElementById('callMinerIDInput').value = callMinerID;
-        document.getElementById('reportTypeInput').value = reportType;
-        document.getElementById('userNameInput').value = userName;
-    </script>
-
-    <form action="your_script_url_here" method="post" enctype="multipart/form-data">
-    <div>
-        <label for="callMinerIDInput">CallMiner ID:</label>
-        <input type="text" id="callMinerIDInput" name="CallMinerID">
-       </div>
-        <div>
-        <label for="reportTypeInput">Report Type:</label>
-        <input type="text" id="reportTypeInput" name="reportType">
-        </div>
+   <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Obervation Uploader</title>
+   </head>
+   <body>
+      <script>
+         const apiUrl1 = "https://sapi.callminer.net/security/getToken";
+         const apiUrl2Base  = "https://feapi.callminer.net/api/v2/comment/";
+           // Define the payload parameters
+         const apiKey = "radiusglobal";
+         const username = "pulkit.jain@radiusgs.com";
+         const password = "Speech239";
+           const encodedPayload =' apiKey=${encodeURIComponent(apiKey)}&username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}';
+           // Function to parse URL parameters
+           function getURLParameter(name) {
+               const urlParams = new URLSearchParams(window.location.search);
+               return urlParams.get(name);
+           }
+           // Getting values from URL
+           const callMinerID = getURLParameter('CallMinerID');
+           const reportType = getURLParameter('ReportType');
+           const userName = getURLParameter('UserName');
+           // Setting values to the read-only text input
+           document.getElementById('callMinerIDInput').value = callMinerID;
+           document.getElementById('reportTypeInput').value = reportType;
+           document.getElementById('userNameInput').value = userName;
+            // Function to be executed on button click
+           function uploadButtonClick() {
+               fetch(apiUrl1, {
+           method: 'POST',
+           headers: {
+               'Content-Type': 'application/x-www-form-urlencoded'
+           },
+           body: encodedPayload
+         })
+         .then(response => response.json())
+         .then(jsonResponse1 => {
+           const apiUrl2 = `${apiUrl2Base}${callMinerID}?JWT=${jsonResponse1}`;
+		Console.log(apiUrl2);
+         // Navigate to the new URL in the same page
+           //window.location.href = apiUrl2;
+         })
+         .catch(error => console.error('Error in first request:', error));
+           }
+      </script>
+      <form action="your_script_url_here" method="post" enctype="multipart/form-data">
          <div>
-        <label for="userNameInput">User Name:</label>
-        <input type="text" id="userNameInput" name="userName">
-        </div>
-        <div>
-        <label for="observationResultInput">Observation Result:</label>
-        <select id="observationResultInput" name="ObservationResult">
-            <option value="False Positive">False Positive</option>
-            <option value="Remediation">Remediation</option>
-            <option value="Term Code Coaching">Term Code Coaching</option>
-            <option value="Spanish Call">Spanish Call</option>
-            <option value="Not Applicable">Not Applicable</option>
-        </select>
-	</div>
-		<div>
-        <label for="commentInput">Observation Comment:</label>
-        <textarea id="commentInput" name="Comment" rows="4" cols="50"></textarea>
-		</div>
-		<div>
-        <button type="submit">Upload</button>
-        </div>
-    </form>
-</body>
+            <label for="callMinerIDInput">CallMiner ID:</label>
+            <input type="text" id="callMinerIDInput" name="CallMinerID">
+         </div>
+         <div>
+            <label for="reportTypeInput">Report Type:</label>
+            <input type="text" id="reportTypeInput" name="reportType">
+         </div>
+         <div>
+            <label for="userNameInput">User Name:</label>
+            <input type="text" id="userNameInput" name="userName">
+         </div>
+         <div>
+            <label for="observationResultInput">Observation Result:</label>
+            <select id="observationResultInput" name="ObservationResult">
+               <option value="False Positive">False Positive</option>
+               <option value="Remediation">Remediation</option>
+               <option value="Term Code Coaching">Term Code Coaching</option>
+               <option value="Spanish Call">Spanish Call</option>
+               <option value="Not Applicable">Not Applicable</option>
+            </select>
+         </div>
+         <div>
+            <label for="commentInput">Observation Comment:</label>
+            <textarea id="commentInput" name="Comment" rows="4" cols="50"></textarea>
+         </div>
+         <div>
+            <button type="submit" onclick="uploadButtonClick()">Upload</button>
+         </div>
+      </form>
+   </body>
 </html>
