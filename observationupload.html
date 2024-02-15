@@ -1,91 +1,51 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Observation Uploader</title>
-    </head>
-    <body>
-<form class="form-horizontal">
-<fieldset>
-<!-- Form Name -->
-<legend>Observation Uploader</legend>
-<!-- Text input-->
-<div class="form-group">
-  <label class="col-md-4 control-label" for="textinput">CallMiner ID</label>  
-  <div class="col-md-4">
-  <input id="textinput" name="textinput" type="text" placeholder="" class="form-control input-md" required="">
-  <span class="help-block">Auto Generated from PowerBi</span>  
-  </div>
-</div>
-<!-- Text input-->
-<div class="form-group">
-  <label class="col-md-4 control-label" for="textinput">Report Type</label>  
-  <div class="col-md-4">
-  <input id="textinput" name="textinput" type="text" placeholder="" class="form-control input-md" required="">
-  <span class="help-block">Auto Generated from PowerBi</span>  
-  </div>
-</div>
-<!-- Textarea -->
-<div class="form-group">
-  <label class="col-md-4 control-label" for="textarea">Observation Comment</label>
-  <div class="col-md-4">                     
-    <textarea class="form-control" id="textarea" name="textarea"></textarea>
-  </div>
-</div>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form Example</title>
+</head>
+<body>
 
-<!-- Text input-->
-<div class="form-group">
-  <label class="col-md-4 control-label" for="textinput">UserName</label>  
-  <div class="col-md-4">
-  <input id="textinput" name="textinput" type="text" placeholder="" class="form-control input-md" required="">
-  <span class="help-block">Auto Generated from PowerBi</span>  
-  </div>
-</div>
+    <script>
+        // Function to parse URL parameters
+        function getURLParameter(name) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(name);
+        }
 
-<!-- Button Drop Down -->
-<div class="form-group">
-  <label class="col-md-4 control-label" for="buttondropdown">Observation Type</label>
-  <div class="col-md-4">
-    <div class="input-group">
-      <input id="buttondropdown" name="buttondropdown" class="form-control" placeholder="" type="text" required="">
-      <div class="input-group-btn">
-        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-          Select Any One
-          <span class="caret"></span>
-        </button>
-        <ul class="dropdown-menu pull-right">
-          <li><a href="#">False Positive</a></li>
-          <li><a href="#">Remediation</a></li>
-          <li><a href="#">Term Code Coaching</a></li>
-          <li><a href="#">Spanish Call</a></li>
-          <li><a href="#">Not Applicable</a></li>
-        </ul>
-      </div>
-    </div>
-  </div>
-</div>
+        // Getting values from URL
+        const callMinerID = getURLParameter('CallMinerID');
+        const reportType = getURLParameter('ReportType');
+        const userName = getURLParameter('UserName');
 
-<!-- Button -->
-<div class="form-group">
-  <label class="col-md-4 control-label" for="singlebutton"></label>
-  <div class="col-md-4">
-    <button id="singlebutton" name="singlebutton" class="btn btn-primary" onclick="uploadToCallMiner()">Upload</button>
-  </div>
-</div>
-</fieldset>
-</form>
-        <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-        <script>
-            // Function to capture values from URL parameters
-            function getUrlParameter(paramName) {
-              const urlParams = new URLSearchParams(window.location.search);
-              return urlParams.get(paramName) || '';
-            }
-              // Set values using the functions
-              document.getElementById('callMinerID').value = getUrlParameter('callMinerID');
-              document.getElementById('userName').value = getUrlParameter('userName');
-              document.getElementById('ReportName').value = getUrlParameter('ReportName');
-        </script>  
-    </body>
+        // Setting values to the read-only text input
+        document.getElementById('callMinerIDInput').value = callMinerID;
+        document.getElementById('reportTypeInput').value = reportType;
+        document.getElementById('userNameInput').value = userName;
+    </script>
+
+    <form action="your_script_url_here" method="post" enctype="multipart/form-data">
+        <label for="callMinerIDInput">CallMiner ID:</label>
+        <input type="text" id="callMinerIDInput" name="CallMinerID" readonly>
+
+        <label for="reportTypeInput">Report Type:</label>
+        <select id="reportTypeInput" name="ReportType">
+            <option value="False Positive">False Positive</option>
+            <option value="Remediation">Remediation</option>
+            <option value="Term Code Coaching">Term Code Coaching</option>
+            <option value="Spanish Call">Spanish Call</option>
+            <option value="Not Applicable">Not Applicable</option>
+        </select>
+
+        <label for="commentInput">Comment:</label>
+        <textarea id="commentInput" name="Comment" rows="4" cols="50"></textarea>
+
+        <label for="fileInput">Upload File:</label>
+        <input type="file" id="fileInput" name="file">
+
+        <button type="submit">Upload</button>
+    </form>
+
+</body>
 </html>
