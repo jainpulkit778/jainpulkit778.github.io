@@ -39,48 +39,71 @@
       </form>
 
       <script defer>
-         const apiUrl1 = "https://sapi.callminer.net/security/getToken";
-         const apiUrl2Base  = "https://feapi.callminer.net/api/v2/comment/";
-         // Define the payload parameters
-         const apiKey = "radiusglobal";
-         const username = "pulkit.jain@radiusgs.com";
-         const password = "Speech239";
-         const encodedPayload = `apiKey=${encodeURIComponent(apiKey)}&username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`;
+    const apiUrl1 = "https://sapi.callminer.net/security/getToken";
+    const apiUrl2Base = "https://feapi.callminer.net/api/v2/comment/";
+    // Define the payload parameters
+    const apiKey = "radiusglobal";
+    const username = "pulkit.jain@radiusgs.com";
+    const password = "Speech239";
+    const encodedPayload = `apiKey=${encodeURIComponent(apiKey)}&username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`;
 
-         // Function to parse URL parameters
-         function getURLParameter(name) {
-            const urlParams = new URLSearchParams(window.location.search);
-            return urlParams.get(name);
-         }
+    // Function to parse URL parameters
+    function getURLParameter(name) {
+        const urlParams = new URLSearchParams(window.location.search);
+        return urlParams.get(name);
+    }
 
-         // Getting values from URL
-         const callMinerID = getURLParameter('CallMinerID');
-         const reportType = getURLParameter('ReportType');
-         const userName = getURLParameter('UserName');
+    // Getting values from URL
+    const callMinerID = getURLParameter('CallMinerID');
+    const reportType = getURLParameter('ReportType');
+    const userName = getURLParameter('UserName');
 
-         // Setting values to the read-only text input
-         document.getElementById('callMinerIDInput').value = callMinerID;
-         document.getElementById('reportTypeInput').value = reportType;
-         document.getElementById('userNameInput').value = userName;
+    // Setting values to the read-only text input
+    document.getElementById('callMinerIDInput').value = callMinerID;
+    document.getElementById('reportTypeInput').value = reportType;
+    document.getElementById('userNameInput').value = userName;
 
-         // Function to be executed on button click
-         function uploadButtonClick() {
-            fetch(apiUrl1, {
-               method: 'POST',
-               headers: {
-                  'Content-Type': 'application/x-www-form-urlencoded'
-               },
-               body: encodedPayload
+    // Function to be executed on button click
+    function uploadButtonClick() {
+        fetch(apiUrl1, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: encodedPayload
+        })
+        .then(response => response.json())
+        .then(jsonResponse1 => {
+            const apiUrl2 = `${apiUrl2Base}${callMinerID}?JWT=${jsonResponse1}`;
+            console.log(apiUrl2);
+         // Concatenate variables into a single comment
+            const concatenatedComment = `${callMinerID};${reportType};${userName};${document.getElementById('observationResultInput').value};${document.getElementById('commentInput').value}`;
+            // Make another POST request using fetch
+            fetch(apiUrl2, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json', // Adjust content type as needed
+                    // Add any additional headers if required
+                },
+                body: JSON.stringify({
+                    // Include any additional data to be sent in the request body
+                    comment: concatenatedComment
+                })
             })
-            .then(response => response.json())
-            .then(jsonResponse1 => {
-               const apiUrl2 = `${apiUrl2Base}${callMinerID}?JWT=${jsonResponse1}`;
-               console.log(apiUrl2);
-               // Navigate to the new URL in the same page
-               // window.location.href = apiUrl2;
+            .then(response => {
+                if (response.status === 200) {
+                    console.log('Second POST response:', response);
+                    // Display a success message or perform other actions as needed
+                    alert('Feedback updated successfully!');
+                } else {
+                    console.error('Error in second request:', response.statusText);
+                    // Display an error message or handle the error accordingly
+                }
             })
-            .catch(error => console.error('Error in first request:', error));
-         }
-      </script>
+            .catch(error => console.error('Error in second request:', error));
+        })
+        .catch(error => console.error('Error in first request:', error));
+    }
+</script>
    </body>
 </html>
