@@ -75,17 +75,19 @@
             // Add other properties as needed
           };
           var json = JSON.stringify(sl1);
+          console.log(json);
           // Convert JSON string to byte array
           var buffer = new TextEncoder().encode(json);
           // Create a Blob from the byte array
           var blob = new Blob([buffer], {
             type: "application/json"
           });
+          console.log(jsonResponse1);
           // Make another POST request using fetch
           fetch(apiUrl2, {
             method: 'POST',
             headers: {
-              'Content-Type': 'application/json',
+              'Content-Type': 'application/json; charset=utf-8',
               'Authorization': 'JWT ' + jsonResponse1
             },
             body: blob
