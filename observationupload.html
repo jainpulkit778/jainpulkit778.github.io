@@ -6,41 +6,75 @@
         <title>Observation Uploader</title>
     </head>
     <body>
-        <form>
-            <h2>Observation Uploader</h2>
-            <div>
-                <label for="callMinerID">CallMiner ID:</label>
-                <input type="text" id="callMinerID" name="callMinerID" value="" readonly>
-            </div>
-            <div>
-                <label for="userName">User Name:</label>
-                <input type="text" id="userName" name="userName" value="" readonly>
-            </div>
-            <div>
-                <label for="observationDate">Observation Date:</label>
-                <input type="text" id="observationDate" name="observationDate" value="" readonly>
-            </div>
-            <div>
-                <label for="ReportName">Report Name:</label>
-                <input type="text" id="ReportName" name="ReportName" value="" readonly>
-            </div>
-            <div>
-                <label for="observationResult">Observation Result:</label>
-                <select id="observationResult" name="observationResult">
-                    <option value="falsePositive">False Positive</option>
-                    <option value="remediation">Remediation</option>
-                    <option value="termCodeCoaching">Term Code Coaching</option>
-                    <option value="spanishCall">Spanish Call</option>
-                    <option value="notApplicable">Not Applicable</option>
-                </select>
-            </div>
-            <div>
-                <label for="comments">Comments:</label>
-                <textarea id="comments" name="comments" rows="4"></textarea>
-            </div>
-            <div id="output"></div>
-            <button type="button" onclick="uploadToSharePoint()">Upload Observation</button>
-        </form>
+<form class="form-horizontal">
+<fieldset>
+<!-- Form Name -->
+<legend>Observation Uploader</legend>
+<!-- Text input-->
+<div class="form-group">
+  <label class="col-md-4 control-label" for="textinput">CallMiner ID</label>  
+  <div class="col-md-4">
+  <input id="textinput" name="textinput" type="text" placeholder="" class="form-control input-md" required="">
+  <span class="help-block">Auto Generated from PowerBi</span>  
+  </div>
+</div>
+<!-- Text input-->
+<div class="form-group">
+  <label class="col-md-4 control-label" for="textinput">Report Type</label>  
+  <div class="col-md-4">
+  <input id="textinput" name="textinput" type="text" placeholder="" class="form-control input-md" required="">
+  <span class="help-block">Auto Generated from PowerBi</span>  
+  </div>
+</div>
+<!-- Textarea -->
+<div class="form-group">
+  <label class="col-md-4 control-label" for="textarea">Observation Comment</label>
+  <div class="col-md-4">                     
+    <textarea class="form-control" id="textarea" name="textarea"></textarea>
+  </div>
+</div>
+
+<!-- Text input-->
+<div class="form-group">
+  <label class="col-md-4 control-label" for="textinput">UserName</label>  
+  <div class="col-md-4">
+  <input id="textinput" name="textinput" type="text" placeholder="" class="form-control input-md" required="">
+  <span class="help-block">Auto Generated from PowerBi</span>  
+  </div>
+</div>
+
+<!-- Button Drop Down -->
+<div class="form-group">
+  <label class="col-md-4 control-label" for="buttondropdown">Observation Type</label>
+  <div class="col-md-4">
+    <div class="input-group">
+      <input id="buttondropdown" name="buttondropdown" class="form-control" placeholder="" type="text" required="">
+      <div class="input-group-btn">
+        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+          Select Any One
+          <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu pull-right">
+          <li><a href="#">False Positive</a></li>
+          <li><a href="#">Remediation</a></li>
+          <li><a href="#">Term Code Coaching</a></li>
+          <li><a href="#">Spanish Call</a></li>
+          <li><a href="#">Not Applicable</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Button -->
+<div class="form-group">
+  <label class="col-md-4 control-label" for="singlebutton"></label>
+  <div class="col-md-4">
+    <button id="singlebutton" name="singlebutton" class="btn btn-primary" onclick="uploadToCallMiner()">Upload</button>
+  </div>
+</div>
+</fieldset>
+</form>
         <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
         <script>
             // Function to capture values from URL parameters
@@ -48,120 +82,10 @@
               const urlParams = new URLSearchParams(window.location.search);
               return urlParams.get(paramName) || '';
             }
-              // Function to handle SharePoint item upload
-              function uploadToSharePoint() {
-                  var callid = document.getElementById('callMinerID').value;
-                  var category = document.getElementById('observationResult').value;
-                  var comments = document.getElementById('comments').value;
-                  var EntUserName = document.getElementById('userName').value;
-                  var EntReportName = document.getElementById('ReportName').value;
-                  var Enterdate = document.getElementById('observationDate').value;
-                  console.log("Uploading to SharePoint...");
-                  alert("Uploading to SharePoint..."); // Add an alert for debugging
-                  checkAndUploadObservation(callid, category, comments, EntUserName, EntReportName, Enterdate);
-              }
-            
-              // Function to check and upload observation to SharePoint
-              function checkAndUploadObservation(callid, category, comments, EntUserName, EntReportName, Enterdate) {
-               var connection = new ActiveXObject("ADODB.Connection");
-            var recordset = new ActiveXObject("ADODB.Recordset");
-
-            var connectionString = "Provider=Microsoft.ACE.OLEDB.12.0;WSS;IMEX=2;RetrieveIds=Yes;" +
-                            "DATABASE=https://radiusgs-my.sharepoint.com/personal/pulkit_jain_radiusgs_com/;" +
-                            "LIST={25BFBC7A-4568-43B1-982E-F43C335907C8}";
-
-            connection.Open(connectionString);
-
-            var sqlQuery = "SELECT count(*) as Result_Count FROM [Feedback_List_Compliance] WHERE Eureka_ID='"+ callid + "' and Enviornment_UserName='" +EntUserName +
-                "' and Report_Type='"+ EntReportName + "'";
-                console.log(sqlQuery);
-            recordset.Open(sqlQuery, connection);
-            var recordsetData = [
-            { columnName: 'Result_Count'}
-        ];
-                  // Simulate recordset structure
-        var recordsetStructure = {
-            Fields: function (columnName) {
-                return {
-                    Value: function () {
-                        return recordsetData[0][columnName];
-                    }
-                };
-            },
-            MoveNext: function () {
-                recordsetData.shift(); // Move to the next record
-            }
-        };
-            recordset.Close();
-            connection.Close();
-              }
-            // Simulate the behavior of CopyFromRecordset
-        function copyFromRecordset() {
-            var outputDiv = document.getElementById('output');
-            outputDiv.innerHTML = ''; // Clear previous content
-
-            // Copy data from recordset to the HTML element
-            while (recordsetData.length > 0) {
-                var value = recordsetStructure.Fields('Result_Count').Value();
-                console.log(value);
-                outputDiv.innerHTML += '<p>' + value + '</p>';
-                recordsetStructure.MoveNext();
-            }
-        }
-              // Function to upload observation to SharePoint
-              function uploadObservation() {
-                  // SharePoint Site URL
-                  var siteUrl = "https://radiusgs-my.sharepoint.com/personal/pulkit_jain_radiusgs_com";
-                  // List Name
-                  var listName = "Feedback_List_Compliance";
-                  // Item properties
-                  var itemProperties = {
-                      "__metadata": { "type": "SP.Data." + listName + "ListItem" },
-                      columnName1: columnValue1,
-                      columnName2: columnValue2,
-                      columnName3: columnValue3,
-                      columnName4: columnValue4,
-                      columnName5: columnValue5,
-                      columnName6: columnValue6
-                      // Add more columns as needed
-                  };
-                  // REST API URL to add a new item
-                  var UploadUrl = siteUrl + "/_api/web/lists/getbytitle('" + listName + "')/items";
-                  // Make the REST API call to upload the item
-                  $.ajax({
-                      url: UploadUrl,
-                      type: "POST",
-                      contentType: "application/json;odata=verbose",
-                      data: JSON.stringify(itemProperties),
-                      headers: {
-                          "Accept": "application/json;odata=verbose",
-                          "X-RequestDigest": $("#__REQUESTDIGEST").val()
-                      },
-                      success: function (data) {
-                          window.close();
-                      },
-                      error: function (error) {
-                          console.log("Error uploading item: " + JSON.stringify(error));
-                      }
-                  });
-              }
-              // Function to get the current date
-              function getCurrentDate() {
-                  const today = new Date();
-                  const year = today.getFullYear();
-                  let month = today.getMonth() + 1;
-                  let day = today.getDate();
-            
-                  month = month < 10 ? '0' + month : month;
-                  day = day < 10 ? '0' + day : day;
-            
-                  return `${year}-${month}-${day}`;
-              }
               // Set values using the functions
               document.getElementById('callMinerID').value = getUrlParameter('callMinerID');
               document.getElementById('userName').value = getUrlParameter('userName');
               document.getElementById('ReportName').value = getUrlParameter('ReportName');
-              document.getElementById('observationDate').value = getCurrentDate();
         </script>  
     </body>
 </html>
