@@ -6,19 +6,16 @@
     <title>Obervation Uploader</title>
 </head>
 <body>
-
     <script>
         // Function to parse URL parameters
         function getURLParameter(name) {
             const urlParams = new URLSearchParams(window.location.search);
             return urlParams.get(name);
         }
-
         // Getting values from URL
         const callMinerID = getURLParameter('CallMinerID');
         const reportType = getURLParameter('ReportType');
         const userName = getURLParameter('UserName');
-
         // Setting values to the read-only text input
         document.getElementById('callMinerIDInput').value = callMinerID;
         document.getElementById('reportTypeInput').value = reportType;
@@ -26,14 +23,20 @@
     </script>
 
     <form action="your_script_url_here" method="post" enctype="multipart/form-data">
+    <div>
         <label for="callMinerIDInput">CallMiner ID:</label>
         <input type="text" id="callMinerIDInput" name="CallMinerID" readonly>
+       </div>
+        <div>
         <label for="reportTypeInput">Report Type:</label>
         <input type="text" id="reportTypeInput" name="reportType" readonly>
-        <label for="reportTypeInput">Report Type:</label>
-        <input type="text" id="userNameInput" name="userName" readonly>
+        </div>
+         <div>
         <label for="userNameInput">User Name:</label>
-        
+        <input type="text" id="userNameInput" name="userName" readonly>
+        </div>
+        <div>
+        <label for="observationResultInput">Observation Result:</label>
         <select id="observationResultInput" name="ObservationResult">
             <option value="False Positive">False Positive</option>
             <option value="Remediation">Remediation</option>
@@ -41,15 +44,14 @@
             <option value="Spanish Call">Spanish Call</option>
             <option value="Not Applicable">Not Applicable</option>
         </select>
-
+	</div>
+		<div>
         <label for="commentInput">Observation Comment:</label>
         <textarea id="commentInput" name="Comment" rows="4" cols="50"></textarea>
-
-        <label for="fileInput">Upload File:</label>
-        <input type="file" id="fileInput" name="file">
-
+		</div>
+		<div>
         <button type="submit">Upload</button>
+        </div>
     </form>
-
 </body>
 </html>
