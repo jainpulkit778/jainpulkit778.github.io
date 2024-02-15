@@ -6,58 +6,18 @@
       <title>Obervation Uploader</title>
    </head>
    <body>
-      <script>
-         const apiUrl1 = "https://sapi.callminer.net/security/getToken";
-         const apiUrl2Base  = "https://feapi.callminer.net/api/v2/comment/";
-           // Define the payload parameters
-         const apiKey = "radiusglobal";
-         const username = "pulkit.jain@radiusgs.com";
-         const password = "Speech239";
-           const encodedPayload =' apiKey=${encodeURIComponent(apiKey)}&username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}';
-           // Function to parse URL parameters
-           function getURLParameter(name) {
-               const urlParams = new URLSearchParams(window.location.search);
-               return urlParams.get(name);
-           }
-           // Getting values from URL
-           const callMinerID = getURLParameter('CallMinerID');
-           const reportType = getURLParameter('ReportType');
-           const userName = getURLParameter('UserName');
-           // Setting values to the read-only text input
-           document.getElementById('callMinerIDInput').value = callMinerID;
-           document.getElementById('reportTypeInput').value = reportType;
-           document.getElementById('userNameInput').value = userName;
-            // Function to be executed on button click
-           function uploadButtonClick() {
-               fetch(apiUrl1, {
-           method: 'POST',
-           headers: {
-               'Content-Type': 'application/x-www-form-urlencoded'
-           },
-           body: encodedPayload
-         })
-         .then(response => response.json())
-         .then(jsonResponse1 => {
-           const apiUrl2 = `${apiUrl2Base}${callMinerID}?JWT=${jsonResponse1}`;
-		Console.log(apiUrl2);
-         // Navigate to the new URL in the same page
-           //window.location.href = apiUrl2;
-         })
-         .catch(error => console.error('Error in first request:', error));
-           }
-      </script>
       <form action="your_script_url_here" method="post" enctype="multipart/form-data">
          <div>
             <label for="callMinerIDInput">CallMiner ID:</label>
-            <input type="text" id="callMinerIDInput" name="CallMinerID">
+            <input type="text" id="callMinerIDInput" name="CallMinerID" readonly>
          </div>
          <div>
             <label for="reportTypeInput">Report Type:</label>
-            <input type="text" id="reportTypeInput" name="reportType">
+            <input type="text" id="reportTypeInput" name="reportType" readonly>
          </div>
          <div>
             <label for="userNameInput">User Name:</label>
-            <input type="text" id="userNameInput" name="userName">
+            <input type="text" id="userNameInput" name="userName" readonly>
          </div>
          <div>
             <label for="observationResultInput">Observation Result:</label>
@@ -74,8 +34,53 @@
             <textarea id="commentInput" name="Comment" rows="4" cols="50"></textarea>
          </div>
          <div>
-            <button type="submit" onclick="uploadButtonClick()">Upload</button>
+            <button type="button" onclick="uploadButtonClick()">Upload</button>
          </div>
       </form>
+
+      <script defer>
+         const apiUrl1 = "https://sapi.callminer.net/security/getToken";
+         const apiUrl2Base  = "https://feapi.callminer.net/api/v2/comment/";
+         // Define the payload parameters
+         const apiKey = "radiusglobal";
+         const username = "pulkit.jain@radiusgs.com";
+         const password = "Speech239";
+         const encodedPayload = `apiKey=${encodeURIComponent(apiKey)}&username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`;
+
+         // Function to parse URL parameters
+         function getURLParameter(name) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(name);
+         }
+
+         // Getting values from URL
+         const callMinerID = getURLParameter('CallMinerID');
+         const reportType = getURLParameter('ReportType');
+         const userName = getURLParameter('UserName');
+
+         // Setting values to the read-only text input
+         document.getElementById('callMinerIDInput').value = callMinerID;
+         document.getElementById('reportTypeInput').value = reportType;
+         document.getElementById('userNameInput').value = userName;
+
+         // Function to be executed on button click
+         function uploadButtonClick() {
+            fetch(apiUrl1, {
+               method: 'POST',
+               headers: {
+                  'Content-Type': 'application/x-www-form-urlencoded'
+               },
+               body: encodedPayload
+            })
+            .then(response => response.json())
+            .then(jsonResponse1 => {
+               const apiUrl2 = `${apiUrl2Base}${callMinerID}?JWT=${jsonResponse1}`;
+               console.log(apiUrl2);
+               // Navigate to the new URL in the same page
+               // window.location.href = apiUrl2;
+            })
+            .catch(error => console.error('Error in first request:', error));
+         }
+      </script>
    </body>
 </html>
