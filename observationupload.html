@@ -1,44 +1,45 @@
 <!DOCTYPE html>
 <html lang="en">
-   <head>
-      <meta charset="UTF-8">
-      <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>Obervation Uploader</title>
-   </head>
-   <body>
-      <form action="your_script_url_here" method="post" enctype="multipart/form-data">
-         <div>
-            <label for="callMinerIDInput">CallMiner ID:</label>
-            <input type="text" id="callMinerIDInput" name="CallMinerID" readonly>
-         </div>
-         <div>
-            <label for="reportTypeInput">Report Type:</label>
-            <input type="text" id="reportTypeInput" name="reportType" readonly>
-         </div>
-         <div>
-            <label for="userNameInput">User Name:</label>
-            <input type="text" id="userNameInput" name="userName" readonly>
-         </div>
-         <div>
-            <label for="observationResultInput">Observation Result:</label>
-            <select id="observationResultInput" name="ObservationResult">
-               <option value="False Positive">False Positive</option>
-               <option value="Remediation">Remediation</option>
-               <option value="Term Code Coaching">Term Code Coaching</option>
-               <option value="Spanish Call">Spanish Call</option>
-               <option value="Not Applicable">Not Applicable</option>
-            </select>
-         </div>
-         <div>
-            <label for="commentInput">Observation Comment:</label>
-            <textarea id="commentInput" name="Comment" rows="4" cols="50"></textarea>
-         </div>
-         <div>
-            <button type="button" onclick="uploadButtonClick()">Upload</button>
-         </div>
-      </form>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Observation Uploader</title>
+</head>
+<body>
 
-      <script defer>
+<form action="your_script_url_here" method="post" enctype="multipart/form-data">
+    <div>
+        <label for="callMinerIDInput">CallMiner ID:</label>
+        <input type="text" id="callMinerIDInput" name="CallMinerID" readonly>
+    </div>
+    <div>
+        <label for="reportTypeInput">Report Type:</label>
+        <input type="text" id="reportTypeInput" name="reportType" readonly>
+    </div>
+    <div>
+        <label for="userNameInput">User Name:</label>
+        <input type="text" id="userNameInput" name="userName" readonly>
+    </div>
+    <div>
+        <label for="observationResultInput">Observation Result:</label>
+        <select id="observationResultInput" name="ObservationResult">
+            <option value="False Positive">False Positive</option>
+            <option value="Remediation">Remediation</option>
+            <option value="Term Code Coaching">Term Code Coaching</option>
+            <option value="Spanish Call">Spanish Call</option>
+            <option value="Not Applicable">Not Applicable</option>
+        </select>
+    </div>
+    <div>
+        <label for="commentInput">Observation Comment:</label>
+        <textarea id="commentInput" name="Comment" rows="4" cols="50"></textarea>
+    </div>
+    <div>
+        <button type="button" onclick="uploadButtonClick()">Upload</button>
+    </div>
+</form>
+
+<script defer>
     const apiUrl1 = "https://sapi.callminer.net/security/getToken";
     const apiUrl2Base = "https://feapi.callminer.net/api/v2/comment/";
     // Define the payload parameters
@@ -76,19 +77,25 @@
         .then(jsonResponse1 => {
             const apiUrl2 = `${apiUrl2Base}${callMinerID}?JWT=${jsonResponse1}`;
             console.log(apiUrl2);
-         // Concatenate variables into a single comment
+            // Concatenate variables into a single comment
             const concatenatedComment = `${callMinerID};${reportType};${userName};${document.getElementById('observationResultInput').value};${document.getElementById('commentInput').value}`;
+           console.log(concatenatedComment);
+            var sl1 = {
+                Comment: concatenatedComment
+                // Add other properties as needed
+            };
+            var json = JSON.stringify(sl1);
+
+            // Convert JSON string to byte array
+            var buffer = new TextEncoder().encode(json);
+
+            // Create a Blob from the byte array
+            var blob = new Blob([buffer], { type: "application/json" });
+
             // Make another POST request using fetch
             fetch(apiUrl2, {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json', // Adjust content type as needed
-                    // Add any additional headers if required
-                },
-                body: JSON.stringify({
-                    // Include any additional data to be sent in the request body
-                    comment: concatenatedComment
-                })
+                body: blob
             })
             .then(response => {
                 if (response.status === 200) {
@@ -105,5 +112,6 @@
         .catch(error => console.error('Error in first request:', error));
     }
 </script>
-   </body>
+
+</body>
 </html>
