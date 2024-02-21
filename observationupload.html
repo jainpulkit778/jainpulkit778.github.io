@@ -66,7 +66,7 @@
           },
           body: encodedPayload
         }).then(response => response.json()).then(jsonResponse1 => {
-          const apiUrl2 = `${apiUrl2Base}${callMinerID}`;
+          const apiUrl2 = `${corsAnywhereUrl}${apiUrl2Base}${callMinerID}`;
           // Concatenate variables into a single comment
           const concatenatedComment = `${callMinerID};${reportType};${userName};${document.getElementById('observationResultInput').value};${document.getElementById('commentInput').value}`;
           var sl1 = {
@@ -81,8 +81,8 @@
             type: "application/json"
           });
           // Make another POST request using fetch
-          console.log(corsAnywhereUrl + encodeURIComponent(apiUrl2));
-          fetch(corsAnywhereUrl + encodeURIComponent(apiUrl2), {
+          console.log(apiUrl2);
+          fetch(apiUrl2, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json; charset=utf-8',
